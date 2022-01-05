@@ -15,7 +15,7 @@ class User extends Authenticatable
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var string[]
      */
     protected $fillable = [
         'name',
@@ -26,7 +26,7 @@ class User extends Authenticatable
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     * @var array
      */
     protected $hidden = [
         'password',
@@ -36,9 +36,47 @@ class User extends Authenticatable
     /**
      * The attributes that should be cast.
      *
-     * @var array<string, string>
+     * @var array
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * ユーザー作成時にデフォルトカレンダーを登録
+     */
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            $user->calendars()->createMany([
+                [
+                    'name' => '仕事',
+                    'color' => 'blue',
+                    'visibility' => 1,
+                    'user_id' => $user->id,
+                ],
+                [
+                    'name' => 'プライベート',
+                    'color' => 'green',
+                    'visibility' => 1,
+                    'user_id' => $user->id,
+                ],
+                [
+                    'name' => 'その他',
+                    'color' => 'red',
+                    'visibility' => 1,
+                    'user_id' => $user->id,
+                ],
+            ]);
+        });
+    }
+
+    /**
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function calendars(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Calendar::class);
+    }
 }
