@@ -46,8 +46,8 @@ class EventController extends Controller
     public function _saveEvent(Request $request, $event)
     {
         $event->name = $request->input('name');
-        $event->start = new Carbon($request->input('start')); // JSからのデータを日時形式に変換
-        $event->end = new Carbon($request->input('end')); // JSからのデータを日時形式に変換
+        $event->start = new Carbon($request->input('start'));
+        $event->end = new Carbon($request->input('end'));
         $event->timed = $request->input('timed');
         $event->calendar_id = $request->input('calendar_id');
         $event->description = $request->input('description');
