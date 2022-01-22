@@ -5,8 +5,10 @@
  */
 
 import Vue from 'vue'
+import Vuex from "vuex";
 import Vuetify from 'vuetify';
 import Home from "./components/pages/HomeComponent";
+import store from "./store/index";
 
 require('./bootstrap');
 
@@ -24,6 +26,7 @@ window.Vue = require('vue').default;
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('HomeComponent', require('./components/pages/HomeComponent.vue').default);
+Vue.use(Vuex);
 Vue.use(Vuetify);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -34,6 +37,7 @@ Vue.use(Vuetify);
 const app = new Vue({
     el: '#app',
     vuetify: new Vuetify(),
+    store: store,
     components: {
         Home
     }
