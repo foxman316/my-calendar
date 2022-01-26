@@ -49,7 +49,9 @@ class EventController extends Controller
         $event->start = new Carbon($request->input('start'));
         $event->end = new Carbon($request->input('end'));
         $event->timed = $request->input('timed');
+        $event->timed = 1;
         $event->calendar_id = $request->input('calendar_id');
+        $event->calendar_id = 1;
         $event->description = $request->input('description');
         $event->color = $request->input('color');
 

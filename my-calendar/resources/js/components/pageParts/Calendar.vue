@@ -31,13 +31,13 @@
 
 <script>
 import { format } from 'date-fns';
-import { mapGetters, mapActions } from 'vuex';
-import EventDetailDialog from './EventDetailDialog'; // EventDetailDialog.vueを読み込み
-
+import { mapGetters, mapActions } from "vuex";
+import EventDetailDialog from "../events/EventDetailDialog";
+import EventFormDialog from "../events/EventFormDialog";
 export default {
     name: 'Calendar',
     data: () => ({
-        value: format(new Date(), 'yyyy/MM/dd'),  // 初期値を今日の月にする
+        value: format(new Date(), 'yyyy/MM/dd'),
     }),
     components: {
         EventDetailDialog,
