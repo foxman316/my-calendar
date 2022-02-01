@@ -1,16 +1,24 @@
 import axios from 'axios';
+import { isDateWithinInterval, compareDates } from '../../functions/datetime';
 import { serializeEvent } from '../../functions/serializers';
 
 const state = {
     events: [],
     event: null,
     isEditMode: false,
+    clickedDate: null,
 };
 
 const getters = {
-    events: state => state.events.map(event => serializeEvent(event)),
+    events: state => state.events.filter(event => event.calendar.visibility).map(event => serializeEvent(event)),
     event: state => serializeEvent(state.event),
+    dayEvents: state =>
+        state.events
+            .map(event => serializeEvent(event))
+            .filter(event => isDateWithinInterval(state.clickedDate, event.startDate, event.endDate))
+            .sort(compareDates),
     isEditMode: state => state.isEditMode,
+    clickedDate: state => state.clickedDate,
 };
 
 const mutations = {
@@ -19,15 +27,14 @@ const mutations = {
     setEvent: (state, event) => (state.event = event),
     removeEvent: (state, event) => (state.events = state.events.filter(e => e.id !== event.id)),
     resetEvent: state => (state.event = null),
-    // 追加
     updateEvent: (state, event) => (state.events = state.events.map(e => (e.id === event.id ? event : e))),
-    // ここまで
     setEditMode: (state, bool) => (state.isEditMode = bool),
+    setClickedDate: (state, date) => (state.clickedDate = date),
 }
 
 const actions = {
     async fetchEvents({ commit }) {
-        const response = await axios.get('/api/events');
+        const response = await axios.get('/events');
         commit('setEvents', response.data);
     },
     async createEvent({ commit }, event) {
@@ -48,6 +55,9 @@ const actions = {
     },
     setEditMode({ commit }, bool) {
         commit('setEditMode', bool)
+    },
+    setClickedDate({ commit }, date) {
+        commit('setClickedDate', date);
     },
 };
 

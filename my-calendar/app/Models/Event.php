@@ -9,9 +9,10 @@ class Event extends Model
 {
     use HasFactory;
 
-    protected $table = 'events';
-
-    public function calendar()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function calendar(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Calendar::class);
     }
