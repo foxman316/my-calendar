@@ -2,6 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Event;
+use App\Models\Calendar;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Console\Command;
 
 class SendRemindMail extends Command
@@ -11,14 +17,14 @@ class SendRemindMail extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'command:send_remind_mail';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'リマインドメールを送ります';
 
     /**
      * Create a new command instance.
@@ -37,6 +43,21 @@ class SendRemindMail extends Command
      */
     public function handle()
     {
-        return 0;
+        $now = Carbon::now()->format('Y-m-d H:i:00');
+        $reminds = Event::where('start','=', $now)->get();
+        
+
+        foreach($reminds as $remind){
+            $calendar = Calendar::where('id','=', $remind->calendar_id)->get();
+            $user = User::where('id','=', $calendar->user_id)->get();
+
+            Log::info(
+                Mail::raw($remind->description, function($message) use($remind) {
+                    $message->to($user->email)
+                        ->from('mail_from@example.com', 'メール送信元')
+                        ->subject("We Reminder. You recall.");
+                })
+            );
+        }
     }
 }
