@@ -49,10 +49,10 @@ class SendRemindMail extends Command
 
         foreach($reminds as $remind){
             $calendar = Calendar::where('id','=', $remind->calendar_id)->get();
-            $user = User::where('id','=', $calendar->user_id)->get();
+            $user = User::where('id','=', $calendar->user_id)->first();
 
             Log::info(
-                Mail::raw($remind->description, function($message) use($remind) {
+                Mail::raw($remind->description, function($message) use($remind, $user) {
                     $message->to($user->email)
                         ->from('mail_from@example.com', 'メール送信元')
                         ->subject("We Reminder. You recall.");
